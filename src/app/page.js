@@ -3,6 +3,32 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from 'framer-motion';
 import PricingCard from '@/components/PricingCard';
+import { useSession, signOut } from "next-auth/react";
+
+const AuthNav = () => {
+  const { data: session } = useSession();
+
+  if (session) {
+    return (
+      <>
+        <Link href="/dashboard" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Dashboard</Link>
+        <button
+          onClick={() => signOut()}
+          className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+        >
+          Sign Out
+        </button>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Link href="/login" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Login</Link>
+      <Link href="/signup" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Get Started</Link>
+    </>
+  );
+};
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -69,8 +95,7 @@ export default function Home() {
               <div className="flex items-center space-x-4">
                 <Link href="#features" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Features</Link>
                 <Link href="#pricing" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Pricing</Link>
-                <Link href="/login" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Login</Link>
-                <Link href="/signup" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Get Started</Link>
+                <AuthNav />
               </div>
             </div>
           </div>

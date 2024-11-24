@@ -30,12 +30,23 @@ export default function Dashboard() {
 
   const fetchMonitors = async () => {
     try {
-      const response = await fetch('/api/monitors');
+      const response = await fetch('/api/monitors', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include' // Important for sending session cookie
+      });
+      
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to fetch monitors');
+      }
+      
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
-      setMonitors(data.monitors);
+      setMonitors(data.monitors || []);
     } catch (error) {
-      setError('Failed to fetch monitors');
+      setError(error.message || 'Failed to fetch monitors');
       console.error('Error fetching monitors:', error);
     } finally {
       setLoading(false);
